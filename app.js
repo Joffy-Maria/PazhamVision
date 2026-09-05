@@ -1,85 +1,77 @@
 /**
- * PazhamVision — Instant Web Audio API + HTML5 Hybrid Autoplayer
- * Designed to bypass standard audio tag restrictions and start sound immediately on load.
+ * PazhamVision — ambient audio and landing-page interactions.
  */
 
-// Immediate execution
-let audioContext = null;
-let audioBufferSource = null;
-const audioPath = 'aud1.mp3';
-
-// Function to fetch and play via Web Audio API (often permitted more easily)
-async function startWebAudio() {
-  try {
-    const AudioCtx = window.AudioContext || window.webkitAudioContext;
-    if (!AudioCtx) return;
-    
-    if (!audioContext) {
-      audioContext = new AudioCtx();
-    }
-
-    if (audioContext.state === 'suspended') {
-      audioContext.resume().catch(() => {});
-    }
-
-    const response = await fetch(audioPath);
-    const arrayBuffer = await response.arrayBuffer();
-    const audioData = await audioContext.decodeAudioData(arrayBuffer);
-
-    audioBufferSource = audioContext.createBufferSource();
-    audioBufferSource.buffer = audioData;
-    audioBufferSource.loop = true;
-
-    const gainNode = audioContext.createGain();
-    gainNode.gain.value = 0.85;
-
-    audioBufferSource.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-
-    audioBufferSource.start(0);
-  } catch (err) {
-    // Fallback to HTML5 audio element
-    startHtml5Audio();
-  }
-}
-
-function startHtml5Audio() {
+function initAudio() {
   const audio = document.getElementById('bg-audio');
-  if (audio) {
-    audio.volume = 0.85;
-    audio.muted = false;
-    audio.play().catch(() => {
-      // If browser security strictly restricts initial unmuted audio on first load:
-      audio.muted = true;
-      audio.play().then(() => {
-        // Unmute after 50ms
-        setTimeout(() => {
-          audio.muted = false;
-        }, 50);
-      }).catch(() => {});
-    });
-  }
-}
+  if (!audio) return;
 
-// Fire audio immediately on page load
-if (document.readyState === 'complete') {
-  startWebAudio();
-  startHtml5Audio();
-} else {
-  window.addEventListener('load', () => {
-    startWebAudio();
-    startHtml5Audio();
-  });
-  document.addEventListener('DOMContentLoaded', () => {
-    startWebAudio();
-    startHtml5Audio();
-  });
+  audio.volume = 0.85;
+  const playAudio = () => audio.play().catch(() => {});
+
+  // Browsers may allow this in a few contexts. If they do not, the first
+  // click/tap starts the exact same HTML audio source—no duplicate playback.
+  playAudio();
+  document.addEventListener('pointerdown', playAudio, { once: true });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  initAudio();
   initHonkTitle();
   initSparkleCanvas();
+  initExperienceFlow();
 });
+
+/* ==========================================================================
+   1. SCREEN FLOW & CALCULATOR
+   ========================================================================== */
+function initExperienceFlow() {
+  const landingView = document.getElementById('landing-view');
+  const calculatorView = document.getElementById('calculator-view');
+  const gamesView = document.getElementById('games-view');
+  const display = document.getElementById('calc-display');
+  const history = document.getElementById('calc-history');
+  const savedCalculation = document.getElementById('saved-calculation');
+  let expression = '';
+
+  const showView = (view) => {
+    [landingView, calculatorView, gamesView].forEach((item) => item.classList.toggle('active', item === view));
+  };
+
+  landingView.addEventListener('click', () => showView(calculatorView));
+
+  document.querySelectorAll('.calc-btn').forEach((button) => {
+    button.addEventListener('click', () => {
+      const { action, val } = button.dataset;
+
+      if (action === 'clear') expression = '';
+      else if (action === 'delete') expression = expression.slice(0, -1);
+      else if (action === 'banana') {
+        const rect = button.getBoundingClientRect();
+        window.spawnBurst?.(rect.left + rect.width / 2, rect.top + rect.height / 2, 18);
+      }
+      else if (action === 'operator') {
+        if (expression && !/[+\-×÷%]$/.test(expression)) expression += val;
+      } else if (action === 'calculate') {
+        if (!expression || /[+\-×÷%]$/.test(expression)) return;
+        savedCalculation.textContent = 'Your calculation is locked. Complete both quests to reveal the result.';
+        window.setTimeout(() => showView(gamesView), 350);
+        return;
+      } else if (val) expression += val;
+
+      display.textContent = expression || '0';
+      history.innerHTML = '&nbsp;';
+    });
+  });
+
+  document.getElementById('back-home-btn').addEventListener('click', () => showView(landingView));
+  document.getElementById('games-back-btn').addEventListener('click', () => {
+    expression = '';
+    display.textContent = '0';
+    history.innerHTML = '&nbsp;';
+    showView(calculatorView);
+  });
+}
 
 /* ==========================================================================
    1. HONK 3D LETTER SPLITTER & KINETIC BOUNCE
