@@ -1,0 +1,219 @@
+/* ==========================================================================
+   PazhamVision — Honk 3D Color Font Edition
+   Font: Honk (Google Fonts)
+   ========================================================================== */
+
+/* --- Custom Color Palette for Honk --- */
+@font-palette-values --banana-honk {
+  font-family: 'Honk';
+  base-palette: 0;
+}
+
+/* --- Design Tokens --- */
+:root {
+  --font-honk: 'Honk', system-ui, -apple-system, sans-serif;
+  --color-yellow: #FFE600;
+  --color-yellow-bright: #FFFF00;
+}
+
+/* --- Global Reset --- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  user-select: none;
+  background-color: #40bfb4;
+}
+
+/* --- 100% CLEAR PIXEL BANANA BACKGROUND --- */
+.background-wallpaper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: url('background.png');
+  background-repeat: repeat;
+  background-position: center;
+  background-size: 320px auto;
+  image-rendering: pixelated;
+  opacity: 1; /* 100% clear and vibrant */
+  z-index: 1;
+}
+
+/* --- Ambient Starburst Canvas --- */
+#star-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* --- Main Center Stage --- */
+.main-stage {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  padding: 20px;
+  max-width: 95vw;
+}
+
+.title-container {
+  position: relative;
+  display: inline-block;
+  padding: 30px 40px;
+  border-radius: 24px;
+}
+
+/* Pop Halo for Contrast against Pixel Pattern */
+.pop-halo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 110%;
+  height: 140%;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.12) 55%, transparent 75%);
+  filter: blur(25px);
+  pointer-events: none;
+  z-index: -1;
+  border-radius: 50%;
+}
+
+/* ==========================================================================
+   HONK 3D TITLE ANIMATION
+   ========================================================================== */
+.honk-title {
+  font-family: var(--font-honk);
+  font-palette: --banana-honk;
+  font-size: clamp(3.4rem, 8.5vw, 7.8rem);
+  line-height: 1.15;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 16px 26px;
+  filter: drop-shadow(4px 4px 0 rgba(0,0,0,0.85)) drop-shadow(0 0 25px rgba(255, 230, 0, 0.6));
+}
+
+.word {
+  display: inline-flex;
+  position: relative;
+}
+
+/* Individual Character Spans with Dynamic Bounce & Morph */
+.honk-char {
+  display: inline-block;
+  transform-origin: center bottom;
+  font-variation-settings: "MORF" 15, "SHLN" 50;
+  animation: honkWave 3s ease-in-out infinite;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.25s ease, font-variation-settings 0.25s ease;
+  padding: 0 2px;
+}
+
+/* Staggered Bounce Keyframe */
+@keyframes honkWave {
+  0%, 100% {
+    transform: translateY(0) scale(1, 1);
+    font-variation-settings: "MORF" 15, "SHLN" 50;
+  }
+  20% {
+    transform: translateY(-24px) scale(1.12, 0.94);
+    font-variation-settings: "MORF" 28, "SHLN" 70;
+  }
+  40% {
+    transform: translateY(0) scale(1.08, 0.92);
+    font-variation-settings: "MORF" 15, "SHLN" 50;
+  }
+  55% {
+    transform: translateY(-10px) scale(1.04, 0.97);
+    font-variation-settings: "MORF" 22, "SHLN" 60;
+  }
+  70% {
+    transform: translateY(0) scale(1, 1);
+    font-variation-settings: "MORF" 15, "SHLN" 50;
+  }
+}
+
+/* EXTREME POP ON HOVER */
+.honk-char:hover {
+  transform: translateY(-35px) scale(1.4) rotate(8deg) !important;
+  font-variation-settings: "MORF" 45, "SHLN" 100 !important;
+  filter: drop-shadow(0 0 35px #FFE600) drop-shadow(0 0 60px #FF9E00) brightness(1.3) !important;
+  animation-play-state: paused;
+}
+
+/* Accent Line */
+.title-accent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  margin-top: 15px;
+}
+
+.accent-bar {
+  width: 140px;
+  height: 6px;
+  background: var(--color-yellow);
+  border-radius: 4px;
+  box-shadow: 
+    2px 2px 0 #000,
+    -2px -2px 0 #000,
+    0 0 15px var(--color-yellow);
+  animation: pulseBar 2s ease-in-out infinite alternate;
+}
+
+.accent-stars {
+  color: var(--color-yellow);
+  font-size: 24px;
+  letter-spacing: 0.3em;
+  text-shadow: 
+    2px 2px 0 #000,
+    -2px -2px 0 #000,
+    0 0 20px var(--color-yellow);
+  animation: starBlink 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes starBlink {
+  0% { transform: scale(0.92); opacity: 0.8; }
+  100% { transform: scale(1.2); opacity: 1; text-shadow: 2px 2px 0 #000, 0 0 35px #FFE600; }
+}
+
+@keyframes pulseBar {
+  0% { transform: scaleX(0.85); }
+  100% { transform: scaleX(1.15); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .honk-title {
+    font-size: 2.6rem;
+    gap: 10px 16px;
+  }
+  .accent-bar {
+    width: 60px;
+    height: 4px;
+  }
+  .accent-stars {
+    font-size: 18px;
+  }
+}

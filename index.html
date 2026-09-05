@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PazhamVision — Banana Calculator Experience</title>
+  
+  <!-- Google Font: Honk & Silkscreen -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Honk:MORF,SHLN@0..45,0..100&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Crisp, 100% Clear Pixel Banana Background -->
+  <div class="background-wallpaper"></div>
+
+  <!-- Ambient Popping Starburst Canvas -->
+  <canvas id="star-canvas"></canvas>
+
+  <!-- Background Audio Element (Continuous Loop) -->
+  <audio id="bg-audio" src="aud1.mp3" loop preload="auto"></audio>
+
+  <!-- VIEW 1: LANDING PAGE -->
+  <main class="view-stage active" id="landing-view">
+    <div class="title-container">
+      
+      <!-- Contrast Halo behind 3D text -->
+      <div class="pop-halo"></div>
+
+      <!-- Vibrant 3D Animated Title in Honk Font -->
+      <h1 class="honk-title" id="artistic-title" aria-label="Welcome to PazhamVision">
+        <span class="word word-welcome">Welcome</span>
+        <span class="word word-to">to</span>
+        <span class="word word-pazham">PazhamVision</span>
+      </h1>
+
+      <!-- Yellow Pixel Accent Star Line -->
+      <div class="title-accent">
+        <span class="accent-bar left"></span>
+        <span class="accent-stars">★ ✦ ★</span>
+        <span class="accent-bar right"></span>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- VIEW 2: BANANA THEMED CALCULATOR -->
+  <section class="view-stage" id="calculator-view">
+    <div class="calc-container">
+      
+      <!-- Calculator Body -->
+      <div class="banana-calculator">
+        
+        <!-- Calculator Top Header -->
+        <div class="calc-header">
+          <div class="calc-brand">
+            <span class="banana-icon">🍌</span>
+            <span class="calc-title">PAZHAM CALC v1.0</span>
+          </div>
+          <div class="calc-status-light">
+            <span class="live-dot"></span>
+            <span>MUSIC ACTIVE 🎵</span>
+          </div>
+        </div>
+
+        <!-- Calculator Display Screen -->
+        <div class="calc-screen-wrapper">
+          <div class="calc-history" id="calc-history">&nbsp;</div>
+          <div class="calc-display" id="calc-display">0</div>
+          
+          <!-- Locked Result Overlay Notification -->
+          <div class="locked-result-toast" id="locked-result-toast">
+            <div class="lock-icon">🔒 🍌</div>
+            <div class="lock-title">RESULT LOCKED!</div>
+            <div class="lock-desc">
+              Your calculation is recorded. Solve upcoming PazhamVision mini-games to unlock the secret answer!
+            </div>
+            <button class="lock-dismiss-btn" id="lock-dismiss-btn">Back to Keypad</button>
+          </div>
+        </div>
+
+        <!-- Calculator Keypad Grid -->
+        <div class="calc-keypad">
+          <!-- Row 1 -->
+          <button class="calc-btn btn-func" data-action="clear">AC</button>
+          <button class="calc-btn btn-func" data-action="delete">⌫</button>
+          <button class="calc-btn btn-op" data-action="operator" data-val="%">%</button>
+          <button class="calc-btn btn-op" data-action="operator" data-val="÷">÷</button>
+
+          <!-- Row 2 -->
+          <button class="calc-btn btn-num" data-val="7">7</button>
+          <button class="calc-btn btn-num" data-val="8">8</button>
+          <button class="calc-btn btn-num" data-val="9">9</button>
+          <button class="calc-btn btn-op" data-action="operator" data-val="×">×</button>
+
+          <!-- Row 3 -->
+          <button class="calc-btn btn-num" data-val="4">4</button>
+          <button class="calc-btn btn-num" data-val="5">5</button>
+          <button class="calc-btn btn-num" data-val="6">6</button>
+          <button class="calc-btn btn-op" data-action="operator" data-val="-">-</button>
+
+          <!-- Row 4 -->
+          <button class="calc-btn btn-num" data-val="1">1</button>
+          <button class="calc-btn btn-num" data-val="2">2</button>
+          <button class="calc-btn btn-num" data-val="3">3</button>
+          <button class="calc-btn btn-op" data-action="operator" data-val="+">+</button>
+
+          <!-- Row 5 -->
+          <button class="calc-btn btn-banana" data-action="banana" title="Bonus Banana">🍌</button>
+          <button class="calc-btn btn-num" data-val="0">0</button>
+          <button class="calc-btn btn-num" data-val=".">.</button>
+          <button class="calc-btn btn-equals" data-action="calculate">=</button>
+        </div>
+
+        <!-- Back to Welcome View Button -->
+        <div class="calc-footer">
+          <button class="back-home-btn" id="back-home-btn">
+            ← Return to PazhamVision
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Script -->
+  <script src="app.js"></script>
+</body>
+</html>
