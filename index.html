@@ -161,15 +161,36 @@
     </div>
   </section>
 
-  <!-- VIEW 4: NEXT GAME PLACEHOLDER -->
+  <!-- VIEW 4: PAZZHAM RUN (separate Next.js app embedded by iframe) -->
   <section class="view-stage" id="next-game-view" aria-live="polite">
-    <div class="games-panel next-game-panel">
-      <p class="games-kicker">GAME 1 COMPLETE</p>
-      <span class="game-emoji">⭐</span>
-      <h2>Banana <span>Burst</span></h2>
-      <p class="saved-calculation">Pazham Ninja unlocked this next quest. It will be added soon; your calculation remains locked until both games are complete.</p>
-      <span class="coming-soon">GAME 2 — COMING SOON</span>
-      <div><button class="back-home-btn" id="next-game-back-btn">← New calculation</button></div>
+    <div class="pazzham-run-panel">
+      <div class="pazzham-run-heading">
+        <div>
+          <p class="games-kicker">GAME 2 OF 2</p>
+          <h2>Pazzham <span>Run</span></h2>
+        </div>
+        <span class="run-lock-status">RESULT LOCKED 🔒</span>
+      </div>
+      <p class="pazzham-run-copy" id="pazzham-run-status">Reach the run target to unlock your original calculation.</p>
+      <div class="pazzham-run-frame">
+        <iframe id="pazzham-run-frame" title="Pazzham Run" allow="autoplay" data-pazzham-run-url="http://localhost:3000"></iframe>
+      </div>
+      <div class="pazzham-run-actions">
+        <button class="back-home-btn" id="retry-pazzham-run-btn" hidden>↻ Retry Pazzham Run</button>
+        <button class="back-home-btn" id="next-game-back-btn">← New calculation</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- VIEW 5: FINAL UNLOCKED CALCULATION -->
+  <section class="view-stage" id="final-result-view" aria-live="polite">
+    <div class="games-panel final-result-panel">
+      <p class="games-kicker">ALL QUESTS COMPLETE</p>
+      <span class="game-emoji">🏆</span>
+      <h2>Result <span>Unlocked!</span></h2>
+      <p class="saved-calculation">Your original PazhamVision calculation was:</p>
+      <output class="final-calculation-result" id="final-calculation-result">0</output>
+      <div><button class="back-home-btn" id="final-result-back-btn">← New calculation</button></div>
     </div>
   </section>
 
