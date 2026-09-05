@@ -7,7 +7,10 @@ function initAudio() {
   if (!audio) return;
 
   audio.volume = 0.85;
-  const playAudio = () => audio.play().catch(() => {});
+  const playAudio = () => {
+    if (audio.dataset.gameComplete === 'true') return;
+    audio.play().catch(() => {});
+  };
 
   // Browsers may allow this in a few contexts. If they do not, the first
   // click/tap starts the exact same HTML audio source—no duplicate playback.
@@ -91,6 +94,8 @@ function initPazhamNinja() {
   const ctx = canvas.getContext('2d');
   const spriteSheet = new Image();
   spriteSheet.src = 'banana-ninja-sprites-transparent.png';
+  const ninjaBackground = new Image();
+  ninjaBackground.src = 'pazham-ninja-background.png';
   const frames = {
     idle: [28, 64, 92, 145], run: [466, 62, 102, 145], jump: [928, 54, 91, 159],
     attack: [27, 280, 110, 140], hurt: [1366, 65, 105, 145], dash: [1070, 290, 120, 115],
@@ -137,10 +142,10 @@ function initPazhamNinja() {
   }
 
   function addPoints(points, x, y) {
-    score = Math.min(40, score + points);
+    score = Math.min(20, score + points);
     scoreElement.textContent = String(score).padStart(3, '0');
     particles.push({ x, y, text: `+${points}`, life: .7, color: points === 3 ? '#ffe600' : '#ffffff' });
-    if (score >= 40) unlockNextGame();
+    if (score >= 20) unlockNextGame();
   }
 
   function attack() {
@@ -160,11 +165,7 @@ function initPazhamNinja() {
     if (!running || completed) return;
     completed = true;
     running = false;
-    const audio = document.getElementById('bg-audio');
-    if (audio) {
-      audio.pause();
-      audio.currentTime = 0;
-    }
+    stopBackgroundAudio();
     overlayTitle.textContent = 'LEVEL COMPLETE!';
     overlayCopy.textContent = 'Banana Ninja Mastered 🍌⚔️ Loading the next game...';
     startButton.style.display = 'none';
@@ -200,11 +201,8 @@ function initPazhamNinja() {
     const width = canvas.clientWidth;
     const height = canvas.clientHeight;
     ctx.clearRect(0, 0, width, height);
+    if (ninjaBackground.complete && ninjaBackground.naturalWidth) ctx.drawImage(ninjaBackground, 0, 0, width, height);
     const ground = height - 70;
-    ctx.fillStyle = '#7bd053'; ctx.fillRect(0, ground, width, 70);
-    ctx.fillStyle = '#315d31'; ctx.fillRect(0, ground, width, 7);
-    ctx.fillStyle = 'rgba(255,255,255,.16)';
-    for (let x = -scroll % 100; x < width; x += 100) ctx.fillRect(x, 44 + (x % 3) * 18, 44, 4);
 
     if (running) {
       spawnTimer += elapsed;
@@ -256,7 +254,7 @@ function initPazhamNinja() {
     running = false; completed = false; items = []; enemies = []; hazards = []; particles = []; trail = []; score = 0; health = 3; spawnTimer = 0; lastFrame = 0; scroll = 0;
     Object.assign(player, { x: 105, y: 0, vx: 0, vy: 0, state: 'idle', attack: 0, dash: 0, hurt: 0, invincible: 0, grounded: true });
     scoreElement.textContent = '000'; heartsElement.textContent = '❤️ ❤️ ❤️';
-    overlayTitle.textContent = 'Reach 40 points!';
+    overlayTitle.textContent = 'Reach 20 points!';
     overlayCopy.textContent = 'Move, jump, dash and slash your way through the banana grove.';
     startButton.textContent = 'Start slicing'; startButton.style.display = '';
     overlay.classList.remove('hidden');
@@ -268,7 +266,7 @@ function initPazhamNinja() {
     sizeCanvas();
     running = true;
     overlay.classList.add('hidden');
-    status.textContent = 'Reach 40 points to unlock the next game.';
+    status.textContent = 'Reach 20 points to unlock the next game.';
     player.y = canvas.clientHeight - 70 - player.height;
   }
 
@@ -291,6 +289,18 @@ function initPazhamNinja() {
   window.stopPazhamNinja = () => { running = false; keys = {}; };
   resetGame();
   animationFrame = requestAnimationFrame(draw);
+}
+
+function stopBackgroundAudio() {
+  const audio = document.getElementById('bg-audio');
+  if (!audio) return;
+
+  audio.dataset.gameComplete = 'true';
+  audio.pause();
+  audio.currentTime = 0;
+  audio.muted = true;
+  audio.removeAttribute('src');
+  audio.load();
 }
 
 /* ==========================================================================
