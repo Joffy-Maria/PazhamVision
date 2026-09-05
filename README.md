@@ -90,9 +90,20 @@ Open the project root:
 ```bash
 cd PazhamVision
 ```
+### Screenshots
+<img width="1920" height="1140" alt="image" src="https://github.com/user-attachments/assets/72021838-28df-4697-9f79-a5e0d32f3be8" />
+Figure 1. Pazham Calc – Banana-themed calculator interface
+The Pazham Calc game presents an interactive calculator interface with arithmetic operations, a pixel-art banana-themed background, and a retro gaming aesthetic.
+<img width="1920" height="1140" alt="Screenshot 2026-09-06 022836" src="https://github.com/user-attachments/assets/fd3660f9-d31f-44c3-99b1-f283f0d44f96" />
+Figure 2. Pazham Ninja – Interactive banana ninja game
+The Pazham Ninja game features a pixel-art ninja character navigating a forest environment, collecting bananas while tracking the player's score and health.
+<img width="1920" height="1140" alt="Screenshot 2026-09-06 022829" src="https://github.com/user-attachments/assets/c591fbc7-9118-479d-82fe-378fe7a0a3e4" />
+Figure 3. Pazham Run – Endless runner mini-game
+The Pazham Run game challenges the player to navigate an ancient temple environment, switch lanes, jump over obstacles, and achieve the target distance to progress.
+
 ### Architectural Flow
 
-Use this instead of the longer architecture explanation:
+
 
 ```markdown
 ## Architectural Flow
