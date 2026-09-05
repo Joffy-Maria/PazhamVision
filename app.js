@@ -34,15 +34,84 @@ function initExperienceFlow() {
   const calculatorView = document.getElementById('calculator-view');
   const gamesView = document.getElementById('games-view');
   const nextGameView = document.getElementById('next-game-view');
+  const finalResultView = document.getElementById('final-result-view');
   const display = document.getElementById('calc-display');
   const history = document.getElementById('calc-history');
+  const runFrame = document.getElementById('pazzham-run-frame');
+  const runStatus = document.getElementById('pazzham-run-status');
+  const retryRunButton = document.getElementById('retry-pazzham-run-btn');
+  const finalResult = document.getElementById('final-calculation-result');
   let expression = '';
+  let hiddenCalculationResult = null;
+  const runUrl = new URL(runFrame.dataset.pazzhamRunUrl, window.location.href);
+  const pazzhamRunOrigin = runUrl.origin;
 
   const showView = (view) => {
-    [landingView, calculatorView, gamesView, nextGameView].forEach((item) => item.classList.toggle('active', item === view));
+    [landingView, calculatorView, gamesView, nextGameView, finalResultView].forEach((item) => item.classList.toggle('active', item === view));
     if (view !== gamesView) window.stopPazhamNinja?.();
   };
-  window.advancePazhamGame = () => showView(nextGameView);
+
+  const calculateExpression = (value) => {
+    const tokens = value.match(/\d*\.?\d+|[+\-×÷%]/g);
+    if (!tokens || tokens.join('') !== value || tokens.length % 2 === 0) return null;
+    const values = [Number(tokens[0])];
+    const operators = [];
+    const precedence = { '+': 1, '-': 1, '×': 2, '÷': 2, '%': 2 };
+    const applyOperator = () => {
+      const operator = operators.pop();
+      const right = values.pop();
+      const left = values.pop();
+      if (!Number.isFinite(left) || !Number.isFinite(right) || (operator === '÷' && right === 0)) return false;
+      const result = operator === '+' ? left + right : operator === '-' ? left - right : operator === '×' ? left * right : operator === '÷' ? left / right : left % right;
+      if (!Number.isFinite(result)) return false;
+      values.push(result);
+      return true;
+    };
+    for (let index = 1; index < tokens.length; index += 2) {
+      const operator = tokens[index];
+      const nextValue = Number(tokens[index + 1]);
+      if (!Number.isFinite(nextValue)) return null;
+      while (operators.length && precedence[operators.at(-1)] >= precedence[operator]) if (!applyOperator()) return null;
+      operators.push(operator);
+      values.push(nextValue);
+    }
+    while (operators.length) if (!applyOperator()) return null;
+    return values[0];
+  };
+
+  const formatResult = (value) => Number.isInteger(value) ? String(value) : String(Number(value.toFixed(10)));
+  const loadPazzhamRun = () => {
+    runStatus.textContent = 'Reach the run target to unlock your original calculation.';
+    retryRunButton.hidden = true;
+    const frameUrl = new URL(runUrl);
+    frameUrl.searchParams.set('parentOrigin', window.location.origin);
+    frameUrl.searchParams.set('run', String(Date.now()));
+    runFrame.src = frameUrl.toString();
+    showView(nextGameView);
+  };
+  const resetCalculation = () => {
+    expression = '';
+    hiddenCalculationResult = null;
+    display.textContent = '0';
+    history.innerHTML = '&nbsp;';
+    runFrame.src = 'about:blank';
+    showView(calculatorView);
+  };
+  window.advancePazhamGame = loadPazzhamRun;
+
+  window.addEventListener('message', (event) => {
+    if (event.origin !== pazzhamRunOrigin || event.source !== runFrame.contentWindow) return;
+    const result = event.data;
+    if (!result || result.type !== 'PAZZHAM_RUN_COMPLETE' || !Number.isFinite(result.score) || !Number.isFinite(result.distance) || !Number.isFinite(result.coins) || typeof result.passedThreshold !== 'boolean') return;
+    if (result.passedThreshold && hiddenCalculationResult !== null) {
+      finalResult.textContent = formatResult(hiddenCalculationResult);
+      runFrame.src = 'about:blank';
+      showView(finalResultView);
+      return;
+    }
+    runStatus.textContent = 'Not quite! Your calculation is still locked. Restart Pazzham Run and try again.';
+    retryRunButton.hidden = false;
+  });
 
   landingView.addEventListener('click', () => showView(calculatorView));
 
@@ -60,6 +129,14 @@ function initExperienceFlow() {
         if (expression && !/[+\-×÷%]$/.test(expression)) expression += val;
       } else if (action === 'calculate') {
         if (!expression || /[+\-×÷%]$/.test(expression)) return;
+        const calculation = calculateExpression(expression);
+        if (calculation === null) {
+          history.textContent = 'INVALID CALCULATION';
+          return;
+        }
+        hiddenCalculationResult = calculation;
+        history.textContent = 'CALCULATION SECURED';
+        display.textContent = '🔒';
         window.resetPazhamNinja?.();
         window.setTimeout(() => showView(gamesView), 350);
         return;
@@ -71,12 +148,9 @@ function initExperienceFlow() {
   });
 
   document.getElementById('back-home-btn').addEventListener('click', () => showView(landingView));
-  document.getElementById('next-game-back-btn').addEventListener('click', () => {
-    expression = '';
-    display.textContent = '0';
-    history.innerHTML = '&nbsp;';
-    showView(calculatorView);
-  });
+  document.getElementById('next-game-back-btn').addEventListener('click', resetCalculation);
+  document.getElementById('final-result-back-btn').addEventListener('click', resetCalculation);
+  retryRunButton.addEventListener('click', loadPazzhamRun);
 }
 
 /* ==========================================================================
