@@ -1,0 +1,142 @@
+<img width="1280" height="640" alt="git (1)" src="https://github.com/user-attachments/assets/8920b256-2ba8-4988-b824-5351134eb4bd" />
+
+# PazhamVision 🎯
+
+## Basic Details
+
+### Team Name: Team Name
+
+### Team Members
+- Team Lead: Joffy Maria Pius - Viswajyothi College of Engineering and Technology
+- Member 2: Sebin Geo - Viswajyothi College of Engineering and Technology
+
+### Project Description
+
+PazhamVision is a fun, interactive banana-themed experience that combines a calculator with browser-based games.
+
+The project turns a simple calculation into a challenge: users calculate a value, complete the Pazham Ninja challenge, and then survive Pazzham Run before the hidden calculation result is finally revealed.
+
+## The Problem (that doesn't exist)
+
+People can calculate numbers instantly.
+
+But can they earn the right to see the answer by slicing bananas and surviving an endless jungle run?
+
+We decided this was an extremely serious problem.
+
+## The Solution (that nobody asked for)
+
+PazhamVision makes calculations unnecessarily difficult in the best possible way.
+
+First, the user performs a calculation. The result is hidden. The user then has to complete a Banana/Pazham Ninja challenge followed by Pazzham Run.
+
+Only after successfully completing both games is the original calculation result revealed.
+
+Because apparently knowing the answer wasn't enough.
+
+## Technical Details
+
+### Technologies/Components Used
+
+For Software:
+- HTML
+- CSS
+- JavaScript
+- TypeScript
+- React
+- Next.js
+- Phaser
+- HTML5 Canvas
+- Vercel
+- Git & GitHub
+
+# Implementation
+
+## For Software
+
+PazhamVision is structured as a main web application combined with a standalone Pazzham Run game.
+
+The main application handles:
+
+- Calculator functionality
+- Expression parsing
+- Calculation result storage
+- Pazham Ninja game
+- Game progression
+- Overall experience flow
+- Final result reveal
+
+Pazzham Run is implemented as a standalone Next.js application using React, TypeScript and Phaser.
+
+The two applications communicate through an iframe and `window.postMessage`.
+
+---
+
+## Installation
+
+### Clone the repository
+
+```bash
+git clone https://github.com/OrdinalHaze/PazhamVision.git
+cd PazhamVision
+```
+
+## Run Commands
+
+### Main PazhamVision Application
+
+Open the project root:
+
+```bash
+cd PazhamVision
+```
+### Architectural Flow
+
+Use this instead of the longer architecture explanation:
+
+```markdown
+## Architectural Flow
+
+```text
+┌──────────────────────┐
+│      Calculator      │
+│  Enter Expression    │
+└──────────┬───────────┘
+           │
+           ▼
+┌──────────────────────┐
+│  Calculate & Store   │
+│   Result Privately   │
+└──────────┬───────────┘
+           │
+           ▼
+┌──────────────────────┐
+│     Pazham Ninja     │
+│  Reach Score = 20    │
+└──────────┬───────────┘
+           │
+           │ Passed
+           ▼
+┌──────────────────────┐
+│     Pazzham Run      │
+│   Next.js + Phaser   │
+└──────────┬───────────┘
+           │
+           │ Passed
+           │
+           │ postMessage()
+           ▼
+┌──────────────────────┐
+│   Main Application   │
+│ Receives Completion  │
+└──────────┬───────────┘
+           │
+           ▼
+┌──────────────────────┐
+│   Reveal Original    │
+│ Calculator Result    │
+└──────────────────────┘
+
+```bash
+git clone https://github.com/OrdinalHaze/PazhamVision.git
+cd PazhamVision
